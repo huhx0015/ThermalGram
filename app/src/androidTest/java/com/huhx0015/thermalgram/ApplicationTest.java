@@ -1,4 +1,4 @@
-package com.huhx0015.flirhotornot;
+package com.huhx0015.thermalgram;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

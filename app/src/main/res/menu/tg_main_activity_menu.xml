@@ -1,0 +1,16 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools" tools:context=".TGMainActivity">
+
+    <menu xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
+        <item
+            android:id="@+id/miShare"
+            android:icon="@drawable/ic_launcher"
+            android:onClick="onShareAction"
+            app:showAsAction="ifRoom"
+            android:title="Share">
+        </item>
+    </menu>
+
+</menu>

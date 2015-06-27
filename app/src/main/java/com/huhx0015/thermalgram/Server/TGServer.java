@@ -1,46 +1,31 @@
-package com.huhx0015.flirhotornot;
+package com.huhx0015.thermalgram.Server;
 
 import android.os.Handler;
-import android.util.Log;
+
 import com.google.gson.Gson;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpResponse;
-import org.apache.http.StatusLine;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
-import java.io.BufferedReader;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.util.List;
 
 /**
  * -----------------------------------------------------------------------------------------------
- * [HONServer] CLASS
- * DEVICE PROFILE: Android
+ * [TGServer] CLASS
  * DESCRIPTION: Holds data returned from the server.
  * -----------------------------------------------------------------------------------------------
  */
 
-public class HONServer {
+public class TGServer {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
     // SERVER VARIABLES
-    private static final String URL = "http://gpop-server.com/stepbot/post.php"; // Server URL
+    private static final String URL = ""; // Server URL
     private static final Gson gsonServer = new Gson(); // Gson parser object
     public static final Handler uiHandler = new Handler(); // UI handler
 
     // CLIENT VARIABLES
-    private static final String GETURL = "http://gpop-server.com/stepbot/steps-callback.php";
+    private static final String GETURL = "";
     private static final Gson gsonClient = new Gson(); // Gson parser object
 
     // LOGGING VARIABLES
-    private static final String TAG = HONServer.class.getSimpleName();
+    private static final String TAG = TGServer.class.getSimpleName();
 
     /** SERVER FUNCTIONALITY ___________________________________________________________________ **/
 
