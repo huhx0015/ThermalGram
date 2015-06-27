@@ -1,6 +1,5 @@
 package com.huhx0015.thermalgram.Fragments;
 
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
@@ -253,9 +252,10 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
                 }
             }
         });
+
+        /*
         // Set up an instance of SystemUiHider to control the system UI for
         // this activity.
-
         mSystemUiHider = SystemUiHider.getInstance(currentActivity, contentView, HIDER_FLAGS);
         mSystemUiHider.setup();
 
@@ -298,6 +298,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
                         }
                     }
                 });
+                */
 
         // Set up the user interaction to manually show or hide the system UI.
         contentView.setOnClickListener(new View.OnClickListener() {
@@ -714,6 +715,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
                  */
                 short[] shortPixels = new short[renderedImage.pixelData().length / 2];
                 byte[] argbPixels = new byte[renderedImage.width() * renderedImage.height() * 4];
+
                 // Thermal data is little endian.
                 ByteBuffer.wrap(renderedImage.pixelData()).order(ByteOrder.LITTLE_ENDIAN).asShortBuffer().get(shortPixels);
                 final byte aPixValue = (byte)255;
@@ -757,9 +759,11 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
                     argbPixels[destP + 1] = gPixValue;
                     argbPixels[destP + 2] = bPixValue;
                 }
+
                 thermalBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(argbPixels));
 
             }
+
             else if(renderedImage.imageType() == RenderedImage.ImageType.ThermalLinearFlux14BitImage) {
                 /**
                  * Here is an example of how to apply custom pseudocolor to a 14 bit greyscale image

@@ -17,6 +17,7 @@ import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
+import com.huhx0015.thermalgram.Fragments.TGFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
 import com.huhx0015.thermalgram.UI.TGUnbind;
 import java.lang.ref.WeakReference;
@@ -142,8 +143,8 @@ public class TGMainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                launchActivity();
-                //openFlirView(true); // Sets up the FLIR fragment view.
+                //launchActivity();
+                openFlirView(true); // Sets up the FLIR fragment view.
             }
         });
     }
@@ -272,10 +273,11 @@ public class TGMainActivity extends AppCompatActivity {
     private void openFlirView(Boolean isAnimated) {
 
         // Changes the title of the toolbar.
-        tgToolbar.setTitle(R.string.flir_preview);
+        tgToolbar.setTitle(R.string.thelfie);
 
         // Sets up the TGFlirFragment view.
-        TGFlirFragment fragment = new TGFlirFragment();
+        //TGFlirFragment fragment = new TGFlirFragment();
+        TGFragment fragment = new TGFragment();
         setUpFragment(fragment, "FLIR", isAnimated);
 
         // Indicates that the TGFlirFragment is currently being shown.
