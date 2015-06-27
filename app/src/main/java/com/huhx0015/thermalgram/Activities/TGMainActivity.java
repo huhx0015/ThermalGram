@@ -1,13 +1,12 @@
 package com.huhx0015.thermalgram.Activities;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -16,7 +15,6 @@ import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
@@ -26,6 +24,9 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 
 public class TGMainActivity extends AppCompatActivity {
+
+    // ACTIVITY VARIABLES
+    private Boolean isLoading = false; // Used for preventing users from launching multiple activity intents.
 
     // FRAGMENT VARIABLES
     private Boolean isRemovingFragment = false; // Used to determine if the fragment is currently being removed.
@@ -38,11 +39,8 @@ public class TGMainActivity extends AppCompatActivity {
     private static WeakReference<TGMainActivity> weakRefActivity = null; // Used to maintain a weak reference to the activity.
 
     // VIEW INJECTION VARIABLES
-    @InjectView(R.id.tg_collapsing_toolbar) CollapsingToolbarLayout tgCollapsingToolbar; // Used to reference the collapsing toolbar object.
     @InjectView(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
     @InjectView(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
-    @InjectView(R.id.tg_toolbar_bg) ImageView toolbarBg; // Used to reference the Toolbar background ImageView object.
-    @InjectView(R.id.tg_list_view) RecyclerView tgListview; // Used to reference the Recycler list view object.
     @InjectView(R.id.tg_toolbar) Toolbar tgToolbar; // Used for referencing the Toolbar object.
 
     /** ACTIVITY FUNCTIONALITY _________________________________________________________________ **/
@@ -133,11 +131,6 @@ public class TGMainActivity extends AppCompatActivity {
             tgToolbar.setTitle(R.string.app_name);
             setSupportActionBar(tgToolbar);
         }
-
-        // Sets the title for the collapsing toolbar.
-        if (tgCollapsingToolbar != null) {
-            tgCollapsingToolbar.setTitle("Thermalgram");
-        }
     }
 
     // setUpButtons(): Sets up the button images and listeners for the activity.
@@ -148,7 +141,9 @@ public class TGMainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-                openFlirView(true); // Sets up the FLIR fragment view.
+
+                launchActivity();
+                //openFlirView(true); // Sets up the FLIR fragment view.
             }
         });
     }
@@ -196,7 +191,7 @@ public class TGMainActivity extends AppCompatActivity {
                         Log.d(LOG_TAG, "setUpFragment(): Fragment animation has ended.");
 
                         // Hides the Recycler ListView object.
-                        tgListview.setVisibility(View.INVISIBLE);
+                        //tgListview.setVisibility(View.INVISIBLE);
                     }
 
                     // onAnimationRepeat(): Runs when the animation is repeated.
@@ -214,7 +209,7 @@ public class TGMainActivity extends AppCompatActivity {
                 fragmentDisplay.setVisibility(View.VISIBLE); // Displays the fragment.
 
                 // Hides the Recycler ListView object.
-                tgListview.setVisibility(View.INVISIBLE);
+                //tgListview.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -226,7 +221,7 @@ public class TGMainActivity extends AppCompatActivity {
         if ((weakRefActivity.get() != null) && (!weakRefActivity.get().isFinishing())) {
 
             // Displays the Recycler ListView object.
-            tgListview.setVisibility(View.VISIBLE);
+            //tgListview.setVisibility(View.VISIBLE);
 
             int animationResource; // References the animation XML resource file.
 
@@ -285,6 +280,23 @@ public class TGMainActivity extends AppCompatActivity {
 
         // Indicates that the TGFlirFragment is currently being shown.
         showFlirFragment = true;
+    }
+
+    /** ADDITIONAL FUNCTIONALITY _______________________________________________________________ **/
+
+    // launchActivity(): Launches an Intent to the FLIR activity.
+    private void launchActivity() {
+
+        // Checks to see if the activity intent is already underway.
+        if (!isLoading) {
+
+            isLoading = true; // Indicates that the activity intent is underway.
+
+            Intent i = new Intent("com.flironeexampleapplication.FLIR");
+            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION); // Indicates that no transition animations should be shown.
+
+            startActivityForResult(i, 0); // Launches the activity class.
+        }
     }
 
     /** RECYCLE FUNCTIONALITY __________________________________________________________________ **/

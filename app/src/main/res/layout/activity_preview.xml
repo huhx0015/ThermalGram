@@ -1,6 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@android:color/background_dark"
+    android:layout_height="match_parent" android:background="@android:color/black"
     android:orientation="vertical"
     tools:context=".PreviewActivity" android:keepScreenOn="true" android:id="@+id/topView"
     android:touchscreenBlocksFocus="false">
@@ -80,7 +80,7 @@
                 android:onClick="onNetStreamClicked"/>
 
             <Button
-                android:layout_width="51dp" style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content" style="?metaButtonBarButtonStyle"
                 android:layout_height="wrap_content"
                 android:text="@string/performTuning"
                 android:id="@+id/tuneButton"

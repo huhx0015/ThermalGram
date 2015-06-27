@@ -1,8 +1,10 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent" android:background="@android:color/background_dark"
+    android:layout_height="match_parent" android:background="@android:color/white"
     android:orientation="vertical"
-    tools:context=".PreviewActivity" android:keepScreenOn="true" android:id="@+id/topView"
+    tools:context=".TGFlirFragment"
+    android:keepScreenOn="true"
+    android:id="@+id/topView"
     android:touchscreenBlocksFocus="false">
 
 
@@ -67,8 +69,7 @@
                 android:id="@+id/chargeCableToggle"
                 android:layout_weight="0.10"
                 android:checked="false"
-                android:visibility="invisible"
-                android:onClick="onSimulatedChargeCableToggleClicked" />
+                android:visibility="invisible" />
 
             <ToggleButton
                 android:layout_width="wrap_content"
@@ -76,22 +77,20 @@
                 android:id="@+id/streamButton"
                 style="?metaButtonBarButtonStyle"
                 android:textOff="@string/startNetStream"
-                android:textOn="@string/stopNetStream"
-                android:onClick="onNetStreamClicked"/>
+                android:textOn="@string/stopNetStream" />
 
             <Button
-                android:layout_width="51dp" style="?metaButtonBarButtonStyle"
+                android:layout_width="wrap_content"
+                style="?metaButtonBarButtonStyle"
                 android:layout_height="wrap_content"
                 android:text="@string/performTuning"
-                android:id="@+id/tuneButton"
-                android:onClick="onTuneClicked" />
+                android:id="@+id/tuneButton" />
 
             <ToggleButton
                 android:layout_width="47dp"
                 android:layout_height="wrap_content"
                 android:text="@string/rotate_on"
                 android:id="@+id/switch_rotate"
-                android:onClick="onRotateClicked"
                 android:layout_gravity="right"
                 android:textOff="@string/rotate_off"
                 android:textOn="@string/rotate_on"
@@ -148,7 +147,6 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/imageButton"
                 android:layout_weight="0.33"
-                android:onClick="onCaptureImageClicked"
                 android:src="@android:drawable/ic_menu_camera"
                 android:layout_gravity="center_horizontal|bottom" />
 
@@ -156,7 +154,6 @@
                 android:layout_width="wrap_content" android:layout_height="wrap_content"
                 android:layout_weight="0.33" android:textOff="@string/change_view"
                 android:textOn="@string/change_view_retract"
-                android:onClick="onChangeViewClicked"
                 android:layout_gravity="bottom|left" />
 
             <Button
@@ -164,7 +161,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/connectSim"
                 android:id="@+id/connect_sim_button"
-                android:onClick="onConnectSimClicked"
                 android:layout_weight="0.33"
                 android:layout_gravity="center_horizontal|bottom|right" />
 

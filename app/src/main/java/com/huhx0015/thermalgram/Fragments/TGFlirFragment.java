@@ -27,6 +27,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -129,9 +130,13 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
     @InjectView(R.id.imageTypeListView) ListView imageTypeListView;
     @InjectView(R.id.imageTypeListContainer) LinearLayout imageTypeListContainer;
     @InjectView(R.id.paletteListView) ListView paletteListView;
+    @InjectView(R.id.imageButton) ImageButton imageButton;
     @InjectView(R.id.change_view_button) ToggleButton changeViewButton;
     @InjectView(R.id.chargeCableToggle) ToggleButton chargeCableButton;
+    @InjectView(R.id.streamButton) ToggleButton streamButton;
+    @InjectView(R.id.switch_rotate) ToggleButton switchRotateButton;
     @InjectView(R.id.connect_sim_button) Button connectSimButton;
+    @InjectView(R.id.tuneButton) Button tuneButton;
     @InjectView(R.id.batteryChargeIndicator) ImageView chargingIndicator;
     @InjectView(R.id.batteryLabelTextView) TextView levelTextView;
 
@@ -161,7 +166,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        View tg_flir_fragment_view = (ViewGroup) inflater.inflate(R.layout.activity_preview, container, false);
+        View tg_flir_fragment_view = (ViewGroup) inflater.inflate(R.layout.tg_flir_fragment, container, false);
         ButterKnife.inject(this, tg_flir_fragment_view); // ButterKnife view injection initialization.
 
         setUpLayout(); // Sets up the layout for the fragment.
@@ -340,7 +345,8 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
                 return true;
             }
         });
-        
+
+        setUpButtons(); // Sets up the button listeners for the fragment.
     }
 
     /**
@@ -357,6 +363,75 @@ public class TGFlirFragment extends Fragment implements Device.Delegate,
             return false;
         }
     };
+
+
+    private void setUpButtons() {
+
+        changeViewButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onChangeViewClicked(v);
+            }
+
+        });
+
+
+
+        chargeCableButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onSimulatedChargeCableToggleClicked(v);
+            }
+
+        });
+
+        connectSimButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onConnectSimClicked(v);
+            }
+
+        });
+
+        imageButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onCaptureImageClicked(v);
+            }
+
+        });
+
+        streamButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onNetStreamClicked(v);
+            }
+
+        });
+
+        tuneButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onTuneClicked(v);
+            }
+
+        });
+
+        switchRotateButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                onRotateClicked(v);
+            }
+
+        });
+    }
     
     /** THREADING FUNCTIONALITY ________________________________________________________________ **/
     

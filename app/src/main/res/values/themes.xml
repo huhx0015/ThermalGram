@@ -1,11 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <item name="colorPrimary">@color/thermalgram_light_color</item>
-        <item name="colorPrimaryDark">@color/thermalgram_dark_color</item>
-        <item name="colorAccent">@color/thermalgram_light_color</item>
+    <style name="AppTheme" parent="AppTheme.Base"/>
+
+    <style name="AppTheme.Base" parent="Theme.AppCompat.NoActionBar">
+        <item name="colorPrimary">@color/tg_toolbar_light_color</item>
+        <item name="colorPrimaryDark">@color/tg_toolbar_dark_color</item>
+        <item name="android:windowNoTitle">true</item>
     </style>
 
+    <style name="SettingsTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorAccent">@color/tg_toolbar_light_color</item>
+        <item name="colorControlNormal">@color/tg_toolbar_light_color</item>
+        <item name="colorPrimary">@color/tg_toolbar_light_color</item>
+        <item name="colorPrimaryDark">@color/tg_toolbar_dark_color</item>
+        <item name="android:textColor">@color/tg_toolbar_light_color</item>
+        <item name="android:textColorSecondary">@color/tg_address_color</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="TGDialog" parent="Theme.AppCompat.Light.Dialog">">
+        <item name="android:windowFullscreen">true</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+    </style>
+
+    <style name="GoogleNowCardStyle" parent="android:Widget.TextView">
+        <item name="android:background">@drawable/tg_now_bg_shadow</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">64dp</item>
+        <item name="android:minWidth">64dp</item>
+        <item name="android:textColor">#707070</item>
+    </style>
 
 </resources>

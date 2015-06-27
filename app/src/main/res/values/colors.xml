@@ -1,7 +1,15 @@
 <resources>
 
     <color name="black_overlay">#66000000</color>
-    <color name="thermalgram_dark_color">#274ebc</color>
-    <color name="thermalgram_light_color">#3174e1</color>
+    <color name="tg_toolbar_dark_color">#d32f2f</color>
+    <color name="tg_toolbar_light_color">#f44336</color>
+    <color name="tg_toolbar_accent_color">#b71c1c</color>
+    <color name="tg_address_color">#6F6F6F</color>
+    <color name="tg_edit_text_color">#98baf0</color>
+    <color name="tg_google_now_color">#0099cc</color>
+    <color name="tg_golden_yellow_color">#fcbf14</color>
+    <color name="tg_orange_color">#ff6c00</color>
+    <color name="tg_green_color">#22a301</color>
+    <color name="tg_teal_color">#009688</color>
 
 </resources>
