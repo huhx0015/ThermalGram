@@ -3,6 +3,7 @@ package com.huhx0015.thermalgram.Activities;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.CollapsingToolbarLayout;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
@@ -38,6 +39,7 @@ public class TGMainActivity extends AppCompatActivity {
 
     // VIEW INJECTION VARIABLES
     @InjectView(R.id.tg_collapsing_toolbar) CollapsingToolbarLayout tgCollapsingToolbar; // Used to reference the collapsing toolbar object.
+    @InjectView(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
     @InjectView(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
     @InjectView(R.id.tg_toolbar_bg) ImageView toolbarBg; // Used to reference the Toolbar background ImageView object.
     @InjectView(R.id.tg_list_view) RecyclerView tgListview; // Used to reference the Recycler list view object.
@@ -120,6 +122,7 @@ public class TGMainActivity extends AppCompatActivity {
         ButterKnife.inject(this); // ButterKnife view injection initialization.
 
         setUpToolbar(); // Sets up the toolbar for the activity.
+        setUpButtons(); // Sets up the button listeners for the activity.
     }
 
     // setUpToolbar(): Sets up the Material Design style toolbar for the activity.
@@ -137,6 +140,18 @@ public class TGMainActivity extends AppCompatActivity {
         }
     }
 
+    // setUpButtons(): Sets up the button images and listeners for the activity.
+    private void setUpButtons() {
+
+        // FLOATING ACTION BUTTON: Click listener for the floation action button.
+        tgActionButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+                openFlirView(true); // Sets up the FLIR fragment view.
+            }
+        });
+    }
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
 

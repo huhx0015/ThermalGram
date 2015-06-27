@@ -57,7 +57,6 @@ public class TGFlirFragment extends Fragment {
     /** LAYOUT FUNCTIONALITY ___________________________________________________________________ **/
 
     // setUpLayout(): Sets up the layout for the fragment.
-    private void setUpLayout() {
-    }
+    private void setUpLayout() {}
 
 }
