@@ -63,7 +63,8 @@ import java.util.Locale;
  * @see com.flir.flironesdk.Device.PowerUpdateDelegate
  */
 
-public class PreviewActivity extends Activity implements Device.Delegate, FrameProcessor.Delegate, Device.StreamDelegate, Device.PowerUpdateDelegate{
+public class PreviewActivity extends Activity implements Device.Delegate,
+        FrameProcessor.Delegate, Device.StreamDelegate, Device.PowerUpdateDelegate{
     static final String ACTION_USB_PERMISSION = "com.android.example.USB_PERMISSION";
     static final String ACTION_USB_DISCONNECT = "android.hardware.usb.action.USB_DEVICE_DETACHED";
     static final String ACTION_USB_CONNECT = "android.hardware.usb.action.USB_DEVICE_ATTACHED";
