@@ -1,16 +1,25 @@
 package com.huhx0015.flirhotornot;
 
+import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
-public class HONMainActivity extends AppCompatActivity {
+public class HONMainActivity extends ActionBarActivity {
+
+    @InjectView(R.id.thermalgram_toolbar) Toolbar thermalgram_toolbar; // Used for referencing the Toolbar object.
+
+    /** ACTIVITY FUNCTIONALITY _________________________________________________________________ **/
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.hon_main_activity);
+        ButterKnife.inject(this); // ButterKnife view injection initialization.
     }
 
     @Override
@@ -33,5 +42,17 @@ public class HONMainActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    /** LAYOUT FUNCTIONALITY ___________________________________________________________________ **/
+
+    // setUpToolbar(): Sets up the Material Design style toolbar for the activity.
+    private void setUpToolbar() {
+
+        // Initializes the Material Design style Toolbar object for the activity.
+        if (thermalgram_toolbar != null) {
+            thermalgram_toolbar.setTitle("");
+            setSupportActionBar(thermalgram_toolbar);
+        }
     }
 }

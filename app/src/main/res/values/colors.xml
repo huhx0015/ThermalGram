@@ -1,0 +1,7 @@
+<resources>
+
+    <color name="black_overlay">#66000000</color>
+    <color name="thermalgram_dark_color">#274ebc</color>
+    <color name="thermalgram_light_color">#3174e1</color>
+
+</resources>

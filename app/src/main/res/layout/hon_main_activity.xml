@@ -14,9 +14,12 @@
             app:layout_scrollFlags="scroll|exitUntilCollapsed">
 
             <android.support.v7.widget.Toolbar
+                android:id="@+id/thermalgram_toolbar"
                 android:layout_height="?attr/actionBarSize"
                 android:layout_width="match_parent"
-                app:layout_collapseMode="pin"/>
+                app:layout_collapseMode="pin"
+                android:background="?attr/colorPrimaryDark"/>
+
         </android.support.design.widget.CollapsingToolbarLayout>
 
     </android.support.design.widget.AppBarLayout>
