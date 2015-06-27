@@ -23,6 +23,11 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile(name:'flironesdk', ext:'aar')
     compile 'com.android.support:design:+'
+    compile 'com.squareup.picasso:picasso:+'
+    compile 'com.jakewharton:butterknife:+'
+    compile 'com.squareup.retrofit:retrofit:+'
+    compile 'com.squareup.okhttp:okhttp:+'
+    compile 'com.squareup.okhttp:okhttp-urlconnection:+'
 }
 
 repositories{
