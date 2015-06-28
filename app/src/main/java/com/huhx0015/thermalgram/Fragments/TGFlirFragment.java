@@ -1,13 +1,13 @@
 package com.huhx0015.thermalgram.Fragments;
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +21,7 @@ import com.flir.flironesdk.FrameProcessor;
 import com.flir.flironesdk.RenderedImage;
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
+import com.huhx0015.thermalgram.Preferences.TGPreferences;
 import com.huhx0015.thermalgram.Server.TGServer;
 import com.huhx0015.thermalgram.UI.TGToast;
 import java.nio.ByteBuffer;
@@ -31,7 +32,14 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TGFragment extends Fragment implements Device.Delegate, FrameProcessor.Delegate, OnFlirViewListener {
+/** ------------------------------------------------------------------------------------------------
+ *  [TGFlirFragment] CLASS
+ *  PROGRAMMER: Michael Yoon Huh (HUHX0015)
+ *  DESCRIPTION: This fragemnt class is responsible for implements FLIR One
+ *  ------------------------------------------------------------------------------------------------
+ */
+
+public class TGFlirFragment extends Fragment implements Device.Delegate, FrameProcessor.Delegate, OnFlirViewListener {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
@@ -42,23 +50,22 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
     // IMAGE VARIABLES
     private Boolean isCaptureImage = false; // Used to determine if an image capture event is in progress.
-    private Boolean isSavingDone = false; // Used to determine if the thermal frame has been saved.
     private int imageCounter = 0; // Used to count the number of images taken.
     private String currentImageFile = ""; // References the current image file name.
     private String saveLocationPath = ""; // References the save location path.
 
     // LOGGING VARIABLES
-    private static final String LOG_TAG = TGFragment.class.getSimpleName();
+    private static final String LOG_TAG = TGFlirFragment.class.getSimpleName();
+
+    // PREFERENCE VARIABLES
+    private SharedPreferences TG_prefs; // Main SharedPreferences objects that store settings for the application.
+    private static final String TG_OPTIONS = "tg_options"; // Used to reference the name of the preference XML file.
 
     // SYSTEM VARIABLES
     private Activity currentActivity; // Used to determine the activity class this fragment is currently attached to.
 
-    // THREAD VARIABLES
-    private Handler backgroundHandler = new Handler(); // Thread for handling background animation.
-
     // VIEW INJECTION VARIABLES
     @InjectView(R.id.tg_capture_button) ImageButton captureButton;
-    @InjectView(R.id.tg_upload_button) ImageButton uploadButton;
     @InjectView(R.id.tg_thermal_image) ImageView thermalImage;
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
@@ -79,12 +86,12 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         View tg_fragment_view = (ViewGroup) inflater.inflate(R.layout.tg_fragment, container, false);
         ButterKnife.inject(this, tg_fragment_view); // ButterKnife view injection initialization.
 
-        // FLIR
+        // FLIR Initialization:
         RenderedImage.ImageType blendedType = RenderedImage.ImageType.BlendedMSXRGBA8888Image;
-        //RenderedImage.ImageType blendedType = RenderedImage.ImageType.VisualJPEGImage;
         frameProcessor = new FrameProcessor(currentActivity, this, EnumSet.of(blendedType));
         frameProcessor.setImagePalette(RenderedImage.Palette.Iron);
 
+        loadPreferences(); // Loads the values from the application preferences.
         setUpLayout(); // Sets up the layout for the fragment.
 
         return tg_fragment_view;
@@ -114,7 +121,6 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
     // setUpLayout(): Sets up the layout for the fragment.
     private void setUpLayout() {
-
         setUpButtons(); // Sets up the button listeners for the fragment.
     }
 
@@ -142,30 +148,6 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
                 // Informs the user to connect the FLIR One device.
                 else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity); }
-            }
-
-        });
-
-        // UPLOAD Button: Defines the listener for the ImageButton object.
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-
-                Log.d(LOG_TAG, "setOnClickListener(): Upload button has been pressed.");
-
-                // Checks to see if the FLIR One device has been connected or not.
-                if (isFlirOn) {
-
-                    TGToast.toastyPopUp("Uploading your thelfie to the server...", currentActivity);
-
-                    // Uploads the saved image file to the web server in the background.
-                    TGUploadImageTask uploadTask = new TGUploadImageTask();
-                    uploadTask.execute();
-                }
-
-                // Informs the user to connect the FLIR One device.
-                else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity);  }
             }
 
         });
@@ -203,13 +185,9 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
                             Log.i("ExternalStorage", "-> uri=" + uri);
                             Log.d(LOG_TAG, "saveImage(): Thermal image save has been successful. File has been saved as: " + currentImageFile);
 
-                            isSavingDone = true; // Signals that the file has been saved.
-
-                            // DEBUG:
                             // Uploads the saved image file to the web server in the background.
                             TGUploadImageTask uploadTask = new TGUploadImageTask();
                             uploadTask.execute();
-
                         }
                     });
         }
@@ -219,6 +197,18 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
             Log.d(LOG_TAG, "saveImage(): Thermal image save has failed.");
             e.printStackTrace();
         }
+    }
+
+    /** PREFERENCES FUNCTIONALITY ______________________________________________________________ **/
+
+    // loadPreferences(): Loads the SharedPreference values from the stored SharedPreferences object.
+    private void loadPreferences() {
+
+        // Initializes the SharedPreferences object.
+        TG_prefs = TGPreferences.initializePreferences(TG_OPTIONS, currentActivity);
+
+        // Retrieves the current image file name.
+        currentImageFile = TGPreferences.getCurrentImage(TG_prefs);
     }
 
     /** INTERFACE FUNCTIONALITY ________________________________________________________________ **/
@@ -232,14 +222,10 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
     /** FLIR EXTENSION FUNCTIONALITY ___________________________________________________________ **/
 
     @Override
-    public void onTuningStateChanged(Device.TuningState tuningState) {
-
-    }
+    public void onTuningStateChanged(Device.TuningState tuningState) {}
 
     @Override
-    public void onAutomaticTuningChanged(boolean b) {
-
-    }
+    public void onAutomaticTuningChanged(boolean b) {}
 
     // onDeviceConnected(): Called when the FLIR One device is connected.
     @Override
@@ -268,10 +254,9 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
     @Override
     public void onFrameProcessed(RenderedImage renderedImage) {
 
-        // NOTE: Using AR88 color profile may be what could be causing crashes on older phones!
         final Bitmap thermalBitmap = Bitmap.createBitmap(renderedImage.width(), renderedImage.height(), Bitmap.Config.ARGB_8888);
-        //final Bitmap thermalBitmap = Bitmap.createBitmap(renderedImage.width(), renderedImage.height(), Bitmap.Config.RGB_565);
 
+        // Copies the pixels from the rendered image into the thermalBitmap.
         thermalBitmap.copyPixelsFromBuffer(ByteBuffer.wrap(renderedImage.pixelData()));
 
         // Runs on the UI thread.
@@ -287,7 +272,6 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         // be saved.
         if (isCaptureImage) {
 
-            //TGToast.toastyPopUp("onFrameProcessed(): Saving current thermal frame...", currentActivity);
             Log.d(LOG_TAG, "onFrameProcessed(): Saving current thermal frame...");
 
             // NOTE: Should be moved to onFrameReceived callback.
@@ -311,7 +295,11 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         // onPostExecute(): This method runs after the AsyncTask has finished running.
         @Override
         protected void onPostExecute(String result) {
+
             Log.d(LOG_TAG, "Image upload task complete.");
+
+            // Saves the current image file name into application preferences.
+            TGPreferences.setCurrentImage(currentImageFile, TG_prefs);
         }
 
         // doInBackground(): This method constantly runs in the background while AsyncTask is

@@ -1,9 +1,14 @@
 package com.huhx0015.thermalgram.Interface;
 
 /**
- * Created by Michael Yoon Huh on 6/27/2015.
+ * -------------------------------------------------------------------------------------------------
+ * [OnFlirViewListener] INTERFACE
+ * DESCRIPTION: An interface class used primarily between TGMainActivity and TGFlirFragment classes.
+ * -------------------------------------------------------------------------------------------------
  */
 public interface OnFlirViewListener {
 
-    public void disconnectFlirDevice();
+    // disconnectFlirDevice(): Used to signal the attached fragment to disconnect the FLIR ONE
+    // device.
+    void disconnectFlirDevice();
 }

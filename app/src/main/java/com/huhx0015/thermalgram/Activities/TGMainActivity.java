@@ -1,7 +1,7 @@
 package com.huhx0015.thermalgram.Activities;
 
 import android.content.Context;
-import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -20,29 +20,42 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
-
 import com.huhx0015.flirhotornot.R;
-import com.huhx0015.thermalgram.Fragments.TGFragment;
+import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
+import com.huhx0015.thermalgram.Preferences.TGPreferences;
 import com.huhx0015.thermalgram.UI.TGSpeech;
 import com.huhx0015.thermalgram.UI.TGUnbind;
 import java.lang.ref.WeakReference;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
+/** ------------------------------------------------------------------------------------------------
+ *  [TGMainActivity] CLASS
+ *  PROGRAMMER: Michael Yoon Huh (HUHX0015)
+ *  DESCRIPTION: This class is the main activity for the application. This activity class handles
+ *  all of the views for the lifecycle of the application, including the handling of the
+ *  FLIR-related fragment for capturing thermal images, as well as loading the WebView of the
+ *  Thermalgram rankings board.
+ *  ------------------------------------------------------------------------------------------------
+ */
+
 public class TGMainActivity extends AppCompatActivity {
 
-    // ACTIVITY VARIABLES
-    private Boolean isLoading = false; // Used for preventing users from launching multiple activity intents.
+    /** CLASS VARIABLES ________________________________________________________________________ **/
 
     // FRAGMENT VARIABLES
     private Boolean isRemovingFragment = false; // Used to determine if the fragment is currently being removed.
     private Boolean showFlirFragment = false; // Used to determine if the FLIR fragment is being shown or not.
-    private TGFragment flirFragment; // References the TGFlirFragment class.
+    private TGFlirFragment flirFragment; // References the TGFlirFragment class.
 
     // LOGGING VARIABLES
     private static final String LOG_TAG = TGMainActivity.class.getSimpleName();
+
+    // PREFERENCE VARIABLES
+    private static final String TG_OPTIONS = "tg_options"; // Used to reference the name of the preference XML file.
+    private String currentImageFile = ""; // References the current image file name.
 
     // SYSTEM VARIABLES
     private static WeakReference<TGMainActivity> weakRefActivity = null; // Used to maintain a weak reference to the activity.
@@ -65,6 +78,11 @@ public class TGMainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         weakRefActivity = new WeakReference<TGMainActivity>(this); // Creates a weak reference of this activity.
+
+        // PREFERENCES:
+        // Resets the temporary preference values to default values.
+        TGPreferences.setDefaultPreferences(TG_OPTIONS, true, this);
+        loadPreferences(); // Loads the values from the application preferences.
 
         setUpLayout(); // Sets up the layout for the activity.
 
@@ -106,7 +124,7 @@ public class TGMainActivity extends AppCompatActivity {
     public void onShareAction(MenuItem item) {
 
         // Shares the data with external activities.
-        TGShareIntent.shareThermalIntent("THERMAL", this);
+        TGShareIntent.shareThermalIntent(currentImageFile, this);
     }
 
     /** PHYSICAL BUTTON FUNCTIONALITY __________________________________________________________ **/
@@ -141,7 +159,6 @@ public class TGMainActivity extends AppCompatActivity {
 
         setUpToolbar(); // Sets up the toolbar for the activity.
         setUpButtons(); // Sets up the button listeners for the activity.
-
     }
 
     // setUpToolbar(): Sets up the Material Design style toolbar for the activity.
@@ -162,12 +179,9 @@ public class TGMainActivity extends AppCompatActivity {
 
             @Override
             public void onClick(View v) {
-
-                //launchActivity();
                 openFlirView(true); // Sets up the FLIR fragment view.
             }
         });
-
     }
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
@@ -242,7 +256,6 @@ public class TGMainActivity extends AppCompatActivity {
 
         if ((weakRefActivity.get() != null) && (!weakRefActivity.get().isFinishing())) {
 
-
             int animationResource; // References the animation XML resource file.
 
             // FLIR
@@ -294,6 +307,7 @@ public class TGMainActivity extends AppCompatActivity {
             });
 
             fragmentDisplay.startAnimation(fragmentAnimation); // Starts the animation.
+            loadPreferences(); // Updates values from preferences.
         }
     }
 
@@ -304,7 +318,7 @@ public class TGMainActivity extends AppCompatActivity {
         tgToolbar.setTitle(R.string.thelfie);
 
         // Sets up the TGFlirFragment view.
-        flirFragment = new TGFragment();
+        flirFragment = new TGFlirFragment();
         setUpFragment(flirFragment, "FLIR", isAnimated);
 
         // Indicates that the TGFlirFragment is currently being shown.
@@ -357,35 +371,21 @@ public class TGMainActivity extends AppCompatActivity {
 
             Log.d(LOG_TAG, "getHotRating(): Javascript Interface activated with value: " + value);
 
-            String speechScript = "Thermalgram"; // References the speech script.
-
-            // 0 - 1.99:
-            if ( (value >= 0) && (value < 2)) {
-                speechScript = "Ice, ice, baby...";
-            }
-
-            // 2 - 2.99:
-            else if ( (value >= 2) && (value < 3)) {
-                speechScript = "That's cold.";
-            }
-
-            // 3 - 3.99:
-            else if ( (value >= 3) && (value < 4)) {
-                speechScript = "Getting warmer...";
-            }
-
-            // 4 - 4.99:
-            else if ( (value >= 4) && (value < 5)) {
-                speechScript = "I feel the heat...";
-            }
-
-            // 5+:
-            else {
-                speechScript = "It's gettin' hot in here...";
-            }
-
-            TGSpeech.startSpeech(speechScript, TGMainActivity.this); // Initiates speech output.
+            // Initiates speech output.
+            TGSpeech.startSpeech(TGSpeech.getPhrase(value), TGMainActivity.this);
         }
+    }
+
+    /** PREFERENCES FUNCTIONALITY ______________________________________________________________ **/
+
+    // loadPreferences(): Loads the SharedPreference values from the stored SharedPreferences object.
+    private void loadPreferences() {
+
+        // Initializes the SharedPreferences object.
+        SharedPreferences TG_prefs = TGPreferences.initializePreferences(TG_OPTIONS, this);
+
+        // Retrieves the current image file name.
+        currentImageFile = TGPreferences.getCurrentImage(TG_prefs);
     }
 
     /** RECYCLE FUNCTIONALITY __________________________________________________________________ **/

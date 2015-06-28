@@ -21,15 +21,4 @@
         android:layout_gravity="bottom|center"
         android:layout_marginBottom="5dp" />
 
-    <ImageButton
-        style="?metaButtonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tg_upload_button"
-        android:layout_weight="0.33"
-        android:src="@android:drawable/ic_menu_upload"
-        android:layout_gravity="center_horizontal|bottom"
-        android:focusableInTouchMode="false"
-        android:visibility="gone" />
-
 </LinearLayout>
