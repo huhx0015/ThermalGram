@@ -45,6 +45,7 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
     // IMAGE VARIABLES
     private Boolean isCaptureImage = false; // Used to determine if an image capture event is in progress.
     private Boolean isSavingDone = false; // Used to determine if the thermal frame has been saved.
+    private int imageCounter = 0; // Used to count the number of images taken.
     private String currentImageFile = ""; // References the current image file name.
     private String saveLocationPath = ""; // References the save location path.
 
@@ -139,10 +140,12 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
                     // Indicates that the current thermal frame should be saved.
                     isCaptureImage = true;
+
+                    imageCounter++; // Increments the image count.
                 }
 
                 // Informs the user to connect the FLIR One device.
-                else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity);  }
+                else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity); }
             }
 
         });
@@ -160,8 +163,9 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
                     TGToast.toastyPopUp("Uploading your thelfie to the server...", currentActivity);
 
-                    // Uploads image to the server.
-                    TGServer.imageUploadFile(currentImageFile);
+                    // Uploads the saved image file to the web server in the background.
+                    TGUploadImageTask uploadTask = new TGUploadImageTask();
+                    uploadTask.execute();
                 }
 
                 // Informs the user to connect the FLIR One device.
@@ -181,7 +185,7 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         saveLocationPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ssZ", Locale.getDefault());
         String formatedDate = sdf.format(new Date());
-        currentImageFile = "Thermalgram-" + formatedDate + ".jpg";
+        currentImageFile = "Thermalgram-" + formatedDate + "-" + imageCounter + ".jpg" ;
 
         Log.d(LOG_TAG, "saveImage(): Save environment has been prepared.");
 
@@ -236,6 +240,7 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
         public void run() {
 
+            /*
             if (isSavingDone) {
 
                 uploadButton.setVisibility(View.VISIBLE);
@@ -244,6 +249,7 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
                 isCaptureImage = false; // Resets the capture image value.
                 isSavingDone = false; // Resets the saving done value.
             }
+            */
 
             backgroundHandler.postDelayed(this, 1000); // Updates the thread per 1000 ms.
         }

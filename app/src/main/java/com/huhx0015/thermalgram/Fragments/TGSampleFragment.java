@@ -60,7 +60,7 @@ import butterknife.InjectView;
  *  -----------------------------------------------------------------------------------------------
  */
 
-public class TGFlirFragment extends Fragment implements Device.Delegate,
+public class TGSampleFragment extends Fragment implements Device.Delegate,
         FrameProcessor.Delegate, Device.StreamDelegate, Device.PowerUpdateDelegate {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/

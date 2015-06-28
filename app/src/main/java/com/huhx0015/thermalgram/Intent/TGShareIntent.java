@@ -23,6 +23,20 @@ public class TGShareIntent {
         sendIntent.setAction(Intent.ACTION_SEND);
         sendIntent.putExtra(Intent.EXTRA_TEXT, "(THERMALGRAM):\n" + message);
         sendIntent.setType("text/plain");
-        context.startActivity(Intent.createChooser(sendIntent, "Sharing my thermals with you!"));
+        context.startActivity(Intent.createChooser(sendIntent, "Share my Thermalgram with:"));
+
+        /*
+        Bitmap b =BitmapFactory.decodeResource(getResources(),R.drawable.userimage);
+            Intent share = new Intent(Intent.ACTION_SEND);
+            share.setType("image/jpeg");
+            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+            b.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+            String path = MediaStore.Images.Media.insertImage(getContentResolver(),
+                    b, "Title", null);
+            Uri imageUri =  Uri.parse(path);
+            share.putExtra(Intent.EXTRA_STREAM, imageUri);
+            startActivity(Intent.createChooser(share, "Select"));
+
+         */
     }
 }

@@ -1,42 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/tg_fragment_layout"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@android:color/black">
 
-
     <ImageView
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:id="@+id/tg_thermal_image" />
+        android:id="@+id/tg_thermal_image"
+        android:layout_weight="1" />
 
-    <LinearLayout
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/tg_button_container">
+    <ImageButton
+        style="@style/GoogleNowCardStyle"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/tg_capture_button"
+        android:src="@android:drawable/ic_menu_camera"
+        android:layout_gravity="bottom|center"
+        android:layout_marginBottom="5dp" />
 
-        <ImageButton
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tg_capture_button"
-            android:layout_weight="0.33"
-            android:src="@android:drawable/ic_menu_camera"
-            android:layout_gravity="center_horizontal|bottom" />
+    <ImageButton
+        style="?metaButtonBarButtonStyle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/tg_upload_button"
+        android:layout_weight="0.33"
+        android:src="@android:drawable/ic_menu_upload"
+        android:layout_gravity="center_horizontal|bottom"
+        android:focusableInTouchMode="false"
+        android:visibility="gone" />
 
-        <ImageButton
-            style="?metaButtonBarButtonStyle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:id="@+id/tg_upload_button"
-            android:layout_weight="0.33"
-            android:src="@android:drawable/ic_menu_upload"
-            android:layout_gravity="center_horizontal|bottom"
-            android:focusableInTouchMode="false"
-            android:visibility="gone" />
-    </LinearLayout>
-
-</FrameLayout>
+</LinearLayout>

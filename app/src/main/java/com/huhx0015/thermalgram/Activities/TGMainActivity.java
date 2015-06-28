@@ -1,5 +1,6 @@
 package com.huhx0015.thermalgram.Activities;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -14,16 +15,17 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
-
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
+import com.huhx0015.thermalgram.UI.TGSpeech;
 import com.huhx0015.thermalgram.UI.TGUnbind;
-
 import java.lang.ref.WeakReference;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -43,10 +45,14 @@ public class TGMainActivity extends AppCompatActivity {
     // SYSTEM VARIABLES
     private static WeakReference<TGMainActivity> weakRefActivity = null; // Used to maintain a weak reference to the activity.
 
+    // WEBVIEW VARIABLES
+    private String currentURL = "http://thermalgram.com/webview.php"; // Used to reference the URL for the WebView object.
+
     // VIEW INJECTION VARIABLES
     @InjectView(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
     @InjectView(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
     @InjectView(R.id.tg_toolbar) Toolbar tgToolbar; // Used for referencing the Toolbar object.
+    @InjectView(R.id.tg_main_webview) WebView tgWebView; // Used to reference the WebView object.
 
     /** ACTIVITY FUNCTIONALITY _________________________________________________________________ **/
 
@@ -58,6 +64,12 @@ public class TGMainActivity extends AppCompatActivity {
         weakRefActivity = new WeakReference<TGMainActivity>(this); // Creates a weak reference of this activity.
 
         setUpLayout(); // Sets up the layout for the activity.
+
+        // Sets up the WebView fragment with the specified URL.
+        if (currentURL != null) {
+            Log.d(LOG_TAG, "Current URL:  1["+currentURL+"]");
+            setUpWebView(); // Sets up the WebView object for the fragment.
+        }
     }
 
     // onDestroy(): This function runs when the activity has terminated and is being destroyed.
@@ -126,6 +138,7 @@ public class TGMainActivity extends AppCompatActivity {
 
         setUpToolbar(); // Sets up the toolbar for the activity.
         setUpButtons(); // Sets up the button listeners for the activity.
+
     }
 
     // setUpToolbar(): Sets up the Material Design style toolbar for the activity.
@@ -196,8 +209,8 @@ public class TGMainActivity extends AppCompatActivity {
 
                         Log.d(LOG_TAG, "setUpFragment(): Fragment animation has ended.");
 
-                        // Hides the Recycler ListView object.
-                        //tgListview.setVisibility(View.INVISIBLE);
+                        // Hides the Floating Action Button.
+                        tgActionButton.setVisibility(View.INVISIBLE);
                     }
 
                     // onAnimationRepeat(): Runs when the animation is repeated.
@@ -214,8 +227,8 @@ public class TGMainActivity extends AppCompatActivity {
 
                 fragmentDisplay.setVisibility(View.VISIBLE); // Displays the fragment.
 
-                // Hides the Recycler ListView object.
-                //tgListview.setVisibility(View.INVISIBLE);
+                // Hides the Floating Action Button.
+                tgActionButton.setVisibility(View.INVISIBLE);
             }
         }
     }
@@ -226,8 +239,6 @@ public class TGMainActivity extends AppCompatActivity {
 
         if ((weakRefActivity.get() != null) && (!weakRefActivity.get().isFinishing())) {
 
-            // Displays the Recycler ListView object.
-            //tgListview.setVisibility(View.VISIBLE);
 
             int animationResource; // References the animation XML resource file.
 
@@ -268,6 +279,9 @@ public class TGMainActivity extends AppCompatActivity {
                     fragmentDisplay.setVisibility(View.INVISIBLE); // Hides the fragment.
                     isRemovingFragment = false; // Indicates that the fragment is no longer being removed.
 
+                    // Displays the action button.
+                    tgActionButton.setVisibility(View.VISIBLE);
+
                     Log.d(LOG_TAG, "removeFragment(): Fragment has been removed.");
                 }
 
@@ -287,7 +301,6 @@ public class TGMainActivity extends AppCompatActivity {
         tgToolbar.setTitle(R.string.thelfie);
 
         // Sets up the TGFlirFragment view.
-        //TGFlirFragment fragment = new TGFlirFragment();
         flirFragment = new TGFragment();
         setUpFragment(flirFragment, "FLIR", isAnimated);
 
@@ -295,20 +308,71 @@ public class TGMainActivity extends AppCompatActivity {
         showFlirFragment = true;
     }
 
-    /** ADDITIONAL FUNCTIONALITY _______________________________________________________________ **/
+    /** WEBVIEW FUNCTIONALITY __________________________________________________________________ **/
 
-    // launchActivity(): Launches an Intent to the FLIR activity.
-    private void launchActivity() {
+    // setUpWebView(): Sets up the WebView object for Internet viewing and connectivity.
+    private void setUpWebView() {
 
-        // Checks to see if the activity intent is already underway.
-        if (!isLoading) {
+        tgWebView.getSettings().setJavaScriptEnabled(true);
+        tgWebView.addJavascriptInterface(new SBWebAppInterface(this), "Android");
+        tgWebView.getSettings().setUserAgentString("Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3");
+        tgWebView.setWebViewClient(new SBWebClient());
+        tgWebView.loadUrl(currentURL);
+    }
 
-            isLoading = true; // Indicates that the activity intent is underway.
+    // SBWebClient(): A method which extends the WebViewClient class to handle the override of URL
+    // loading behavior.
+    private class SBWebClient extends WebViewClient {
 
-            Intent i = new Intent("com.flironeexampleapplication.FLIR");
-            i.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION); // Indicates that no transition animations should be shown.
+        @Override
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
+            return false;
+        }
+    }
 
-            startActivityForResult(i, 0); // Launches the activity class.
+    // SBWebAppInterface(): This method is responsible for binding JavaScript code to Android code.
+    public class SBWebAppInterface {
+
+        // Instantiates the interface and sets the context.
+        Context mContext;
+        SBWebAppInterface(Context c) {
+            mContext = c;
+        }
+
+        // getHotRating(): Determines if the view should be closed.
+        @JavascriptInterface
+        public void getHotRating(Double value) {
+
+            Log.d(LOG_TAG, "getHotRating(): Javascript Interface activated with value: " + value);
+
+            String speechScript = "Thermalgram"; // References the speech script.
+
+            // 0 - 1.99:
+            if ( (value >= 0) && (value < 2)) {
+                speechScript = "Ice, ice, baby...";
+            }
+
+            // 2 - 2.99:
+            else if ( (value >= 2) && (value < 3)) {
+                speechScript = "That's cold.";
+            }
+
+            // 3 - 3.99:
+            else if ( (value >= 3) && (value < 4)) {
+                speechScript = "Getting warmer...";
+            }
+
+            // 4 - 4.99:
+            else if ( (value >= 4) && (value < 5)) {
+                speechScript = "I feel the heat...";
+            }
+
+            // 5+:
+            else {
+                speechScript = "It's gettin' hot in here...";
+            }
+
+            TGSpeech.startSpeech(speechScript, TGMainActivity.this); // Initiates speech output.
         }
     }
 
