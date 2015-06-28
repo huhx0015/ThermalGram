@@ -1,4 +1,4 @@
-Thermalgram | FLIR's "Bring the Heat" Hacker and Maker Challenge: 
+ThermalGram | FLIR's "Bring the Heat" Hacker and Maker Challenge: 
 =========
 
 Team: Michael Huh, Ibrahim Kabil, Goretti Campbell, Ssurey Moon, Missy Bur
