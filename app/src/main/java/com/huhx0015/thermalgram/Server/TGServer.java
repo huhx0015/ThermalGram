@@ -1,8 +1,25 @@
 package com.huhx0015.thermalgram.Server;
 
+import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 
 import com.google.gson.Gson;
+import com.huhx0015.thermalgram.Interface.FileUploadService;
+
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.InputStreamEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+
+import java.io.File;
+import java.io.FileInputStream;
+
+import retrofit.Callback;
+import retrofit.RetrofitError;
+import retrofit.client.Response;
+import retrofit.mime.TypedFile;
 
 /**
  * -----------------------------------------------------------------------------------------------
@@ -16,7 +33,7 @@ public class TGServer {
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
     // SERVER VARIABLES
-    private static final String URL = ""; // Server URL
+    private static final String POSTURL = "http://50.62.57.6/~ibrahimkabil7/thermalgram/endpoint.php"; // Server URL
     private static final Gson gsonServer = new Gson(); // Gson parser object
     public static final Handler uiHandler = new Handler(); // UI handler
 
@@ -25,9 +42,53 @@ public class TGServer {
     private static final Gson gsonClient = new Gson(); // Gson parser object
 
     // LOGGING VARIABLES
-    private static final String TAG = TGServer.class.getSimpleName();
+    private static final String LOG_TAG = TGServer.class.getSimpleName();
 
     /** SERVER FUNCTIONALITY ___________________________________________________________________ **/
+
+    public static void uploadImageFile(String fileName) {
+
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/", fileName);
+
+        try {
+            HttpClient httpclient = new DefaultHttpClient();
+
+            HttpPost httppost = new HttpPost(POSTURL);
+
+            InputStreamEntity reqEntity = new InputStreamEntity(
+                    new FileInputStream(file), -1);
+            reqEntity.setContentType("binary/octet-stream");
+            reqEntity.setChunked(true); // Send in multiple parts if needed
+            httppost.setEntity(reqEntity);
+            HttpResponse response = httpclient.execute(httppost);
+        }
+
+        catch (Exception e) {
+            Log.d(LOG_TAG, "uploadImageFile(): Failed to upload image.");
+        }
+
+
+
+        /*
+        FileUploadService service = ServiceGenerator.createService(FileUpload.class, FileUpload.BASE_URL);
+        TypedFile typedFile = new TypedFile("multipart/form-data", new File(filePath));
+        String description = "hello, this is description speaking";
+
+        service.upload(typedFile, description, new Callback<String>() {
+            @Override
+            public void success(String s, Response response) {
+                Log.e("Upload", "success");
+            }
+
+            @Override
+            public void failure(RetrofitError error) {
+                Log.e("Upload", "error");
+            }
+        });
+        */
+
+    }
 
     /*
     // updateServer(): Updates the server with the StepBOT data.

@@ -12,12 +12,31 @@
         android:layout_height="fill_parent"
         android:id="@+id/tg_thermal_image" />
 
-    <ImageButton
-        style="?metaButtonBarButtonStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/tg_capture_button"
-        android:layout_weight="0.33"
-        android:src="@android:drawable/ic_menu_camera"
-        android:layout_gravity="center_horizontal|bottom" />
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/tg_button_container">
+
+        <ImageButton
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tg_capture_button"
+            android:layout_weight="0.33"
+            android:src="@android:drawable/ic_menu_camera"
+            android:layout_gravity="center_horizontal|bottom" />
+
+        <ImageButton
+            style="?metaButtonBarButtonStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/tg_upload_button"
+            android:layout_weight="0.33"
+            android:src="@android:drawable/ic_menu_upload"
+            android:layout_gravity="center_horizontal|bottom"
+            android:focusableInTouchMode="false"
+            android:visibility="gone" />
+    </LinearLayout>
+
 </FrameLayout>

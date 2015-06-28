@@ -3,6 +3,7 @@ package com.huhx0015.thermalgram.Activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -14,17 +15,29 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.Button;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
 import com.huhx0015.thermalgram.Fragments.TGFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
+import com.huhx0015.thermalgram.Interface.OnFlirUpdateListener;
+import com.huhx0015.thermalgram.Server.TGServer;
+import com.huhx0015.thermalgram.UI.TGToast;
 import com.huhx0015.thermalgram.UI.TGUnbind;
+import com.squareup.picasso.Picasso;
+
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
+
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TGMainActivity extends AppCompatActivity {
+public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateListener {
 
     // ACTIVITY VARIABLES
     private Boolean isLoading = false; // Used for preventing users from launching multiple activity intents.
@@ -147,6 +160,7 @@ public class TGMainActivity extends AppCompatActivity {
                 openFlirView(true); // Sets up the FLIR fragment view.
             }
         });
+
     }
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
@@ -310,5 +324,14 @@ public class TGMainActivity extends AppCompatActivity {
         // Unbinds all Drawable objects attached to the current layout.
         try { TGUnbind.unbindDrawables(findViewById(R.id.tg_main_activity_layout)); }
         catch (NullPointerException e) { e.printStackTrace(); } // Prints error message.
+    }
+
+    /** INTERFACE FUNCTIONALITY ________________________________________________________________ **/
+
+    // updateServer(): Sends the file to the server.
+    @Override
+    public void updateServer(String fileName) {
+        TGToast.toastyPopUp("updateServer(): Uploading the image to the server...", this);
+        TGServer.uploadImageFile(fileName);
     }
 }
