@@ -36,7 +36,8 @@ import butterknife.InjectView;
 /** ------------------------------------------------------------------------------------------------
  *  [TGFlirFragment] CLASS
  *  PROGRAMMER: Michael Yoon Huh (HUHX0015)
- *  DESCRIPTION: This fragment class is responsible for implements FLIR One
+ *  DESCRIPTION: This fragment class is responsible for implementing the FLIR One camera view. It
+ *  interacts with the FLIR One device and listens to the connection state.
  *  ------------------------------------------------------------------------------------------------
  */
 

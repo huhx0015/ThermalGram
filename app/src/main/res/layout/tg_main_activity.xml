@@ -55,6 +55,8 @@
                     android:layout_gravity="bottom|right"
                     android:layout_margin="24dp"
                     android:src="@drawable/tg_icon"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:elevation="10dp"
                     app:backgroundTint="@color/tg_toolbar_light_color"
                     app:rippleColor="@color/tg_toolbar_accent_color"
                     app:layout_behavior="com.huhx0015.thermalgram.UI.ScrollAwareFABBehavior"
