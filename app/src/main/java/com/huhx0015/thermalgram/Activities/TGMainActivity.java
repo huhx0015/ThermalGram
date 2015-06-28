@@ -23,6 +23,7 @@ import android.widget.ProgressBar;
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
+import com.huhx0015.thermalgram.Interface.OnFlirUpdateListener;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
 import com.huhx0015.thermalgram.Preferences.TGPreferences;
 import com.huhx0015.thermalgram.UI.TGSpeech;
@@ -41,7 +42,7 @@ import butterknife.InjectView;
  *  ------------------------------------------------------------------------------------------------
  */
 
-public class TGMainActivity extends AppCompatActivity {
+public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateListener {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
@@ -406,5 +407,12 @@ public class TGMainActivity extends AppCompatActivity {
     public void disconnectFlirFromFragment() {
         try { ((OnFlirViewListener) flirFragment).disconnectFlirDevice(); }
         catch (ClassCastException cce) { } // Catch for class cast exception errors.
+    }
+
+    // updatePreferences(): An interface method that is signalled by TGFlirFragment class to update
+    // the preference values.
+    @Override
+    public void updatePreferences() {
+        loadPreferences(); // Loads the SharedPreference values.
     }
 }

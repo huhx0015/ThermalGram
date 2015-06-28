@@ -20,6 +20,7 @@ import com.flir.flironesdk.Frame;
 import com.flir.flironesdk.FrameProcessor;
 import com.flir.flironesdk.RenderedImage;
 import com.huhx0015.flirhotornot.R;
+import com.huhx0015.thermalgram.Interface.OnFlirUpdateListener;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
 import com.huhx0015.thermalgram.Preferences.TGPreferences;
 import com.huhx0015.thermalgram.Server.TGServer;
@@ -185,6 +186,12 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
                             Log.i("ExternalStorage", "-> uri=" + uri);
                             Log.d(LOG_TAG, "saveImage(): Thermal image save has been successful. File has been saved as: " + currentImageFile);
 
+                            // Saves the current image file name into application preferences.
+                            TGPreferences.setCurrentImage(currentImageFile, TG_prefs);
+
+                            // Signals the attached activity to update it's SharedPreference values.
+                            updateActivityPreferences();
+
                             // Uploads the saved image file to the web server in the background.
                             TGUploadImageTask uploadTask = new TGUploadImageTask();
                             uploadTask.execute();
@@ -217,6 +224,13 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
     @Override
     public void disconnectFlirDevice() {
         Device.stopDiscovery();
+    }
+
+    // updateActivityPreferences(): Signals the attached activity to update it's SharedPreference
+    // values.
+    public void updateActivityPreferences() {
+        try { ((OnFlirUpdateListener) currentActivity).updatePreferences(); }
+        catch (ClassCastException cce) { } // Catch for class cast exception errors.
     }
 
     /** FLIR EXTENSION FUNCTIONALITY ___________________________________________________________ **/
@@ -295,11 +309,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
         // onPostExecute(): This method runs after the AsyncTask has finished running.
         @Override
         protected void onPostExecute(String result) {
-
             Log.d(LOG_TAG, "Image upload task complete.");
-
-            // Saves the current image file name into application preferences.
-            TGPreferences.setCurrentImage(currentImageFile, TG_prefs);
         }
 
         // doInBackground(): This method constantly runs in the background while AsyncTask is
