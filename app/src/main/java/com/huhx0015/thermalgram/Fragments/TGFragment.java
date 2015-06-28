@@ -23,13 +23,11 @@ import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
 import com.huhx0015.thermalgram.Server.TGServer;
 import com.huhx0015.thermalgram.UI.TGToast;
-
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
-
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
@@ -104,14 +102,12 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
     public void onResume() {
         super.onResume();
         Device.startDiscovery(currentActivity, this);
-        startStopThreads(true);  // Starts all threads.
     }
 
     @Override
     public void onPause() {
         super.onPause();
         Device.stopDiscovery();
-        startStopThreads(false);  // Stops all threads.
     }
 
     /** LAYOUT FUNCTIONALITY ___________________________________________________________________ **/
@@ -231,38 +227,6 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
     @Override
     public void disconnectFlirDevice() {
         Device.stopDiscovery();
-    }
-
-    /** THREAD FUNCTIONALITY ___________________________________________________________________ **/
-
-    // backgroundThread():
-    private Runnable backgroundThread = new Runnable() {
-
-        public void run() {
-
-            /*
-            if (isSavingDone) {
-
-                uploadButton.setVisibility(View.VISIBLE);
-                captureButton.setVisibility(View.GONE);
-
-                isCaptureImage = false; // Resets the capture image value.
-                isSavingDone = false; // Resets the saving done value.
-            }
-            */
-
-            backgroundHandler.postDelayed(this, 1000); // Updates the thread per 1000 ms.
-        }
-    };
-
-    // startStopThreads(): Resumes or stops all threads.
-    private void startStopThreads(Boolean isStart) {
-
-        // Starts all threads.
-        if (isStart == true) { backgroundHandler.postDelayed(backgroundThread, 1000); }
-
-        // Stops all threads.
-        else { backgroundHandler.removeCallbacks(backgroundThread); }
     }
 
     /** FLIR EXTENSION FUNCTIONALITY ___________________________________________________________ **/

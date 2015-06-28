@@ -19,6 +19,8 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+
 import com.huhx0015.flirhotornot.R;
 import com.huhx0015.thermalgram.Fragments.TGFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
@@ -51,6 +53,7 @@ public class TGMainActivity extends AppCompatActivity {
     // VIEW INJECTION VARIABLES
     @InjectView(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
     @InjectView(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
+    @InjectView(R.id.tg_webview_progress_bar) ProgressBar tgProgressBar; // References the loading progress bar.
     @InjectView(R.id.tg_toolbar) Toolbar tgToolbar; // Used for referencing the Toolbar object.
     @InjectView(R.id.tg_main_webview) WebView tgWebView; // Used to reference the WebView object.
 
@@ -316,8 +319,17 @@ public class TGMainActivity extends AppCompatActivity {
         tgWebView.getSettings().setJavaScriptEnabled(true);
         tgWebView.addJavascriptInterface(new SBWebAppInterface(this), "Android");
         tgWebView.getSettings().setUserAgentString("Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3");
-        tgWebView.setWebViewClient(new SBWebClient());
-        tgWebView.loadUrl(currentURL);
+
+        // Sets a listener for the WebView.
+        tgWebView.setWebViewClient(new WebViewClient() {
+
+            // onPageFinished(): Runs when the WebView has fully loaded.
+            public void onPageFinished(WebView view, String url) {
+                tgProgressBar.setVisibility(View.GONE); // Hides the progress bar.
+            }
+        });
+
+        tgWebView.loadUrl(currentURL); // Loads the URL for the WebView.
     }
 
     // SBWebClient(): A method which extends the WebViewClient class to handle the override of URL
