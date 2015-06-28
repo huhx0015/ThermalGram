@@ -245,7 +245,7 @@ public class UploadToServer extends Activity {
         @Override
         protected String doInBackground(String... params) {
 
-            TGServer.imageUploadFile(uploadFilePath + "" + uploadFileName, UploadToServer.this);
+            TGServer.imageUploadFile(uploadFilePath + "" + uploadFileName);
             return null;
         }
     }

@@ -1,25 +1,8 @@
 package com.huhx0015.thermalgram.Server;
 
-import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Environment;
-import android.os.Handler;
 import android.util.Log;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.google.gson.Gson;
-import com.huhx0015.thermalgram.Interface.FileUploadService;
-import com.huhx0015.thermalgram.UI.TGToast;
-
-import org.apache.http.HttpResponse;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.InputStreamEntity;
-import org.apache.http.impl.client.DefaultHttpClient;
 
 import java.io.DataOutputStream;
 import java.io.File;
@@ -27,11 +10,6 @@ import java.io.FileInputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-
-import retrofit.Callback;
-import retrofit.RetrofitError;
-import retrofit.client.Response;
-import retrofit.mime.TypedFile;
 
 /**
  * -----------------------------------------------------------------------------------------------
@@ -56,13 +34,12 @@ public class TGServer {
 
     /** SERVER FUNCTIONALITY ___________________________________________________________________ **/
 
-    public static int imageUploadFile(String sourceFileUri, final Activity currentActivity) {
+    // imageUploadFile(): Uploads the image to the web server.
+    public static int imageUploadFile(String fileName) {
 
-        String upLoadServerUri = POSTURL;
-        final String uploadFileName = "Test.jpg";
+        // References the directory path where the image is stored.
         final String uploadFilePath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/";
-
-        String fileName = sourceFileUri;
+        String fullFilePath = uploadFilePath + "" + fileName; // Sets the full file path.
 
         HttpURLConnection conn = null;
         DataOutputStream dos = null;
@@ -72,34 +49,22 @@ public class TGServer {
         int bytesRead, bytesAvailable, bufferSize;
         byte[] buffer;
         int maxBufferSize = 1 * 1024 * 1024;
-        File sourceFile = new File(sourceFileUri);
+        File sourceFile = new File(fullFilePath);
 
         if (!sourceFile.isFile()) {
 
-            //dialog.dismiss();
-
-            Log.e("uploadFile", "Source File not exist :"
-                    +uploadFilePath + "" + uploadFileName);
-
-            /*
-            currentActivity.runOnUiThread(new Runnable() {
-                public void run() {
-
-                    TGToast.toastyPopUp("Source File not exist : " + uploadFilePath + "" + uploadFileName, currentActivity);
-                }
-            });
-            */
+            Log.e("uploadFile", "Source File not exist :" +uploadFilePath + "" + fileName);
 
             return 0;
-
         }
-        else
-        {
+
+        else {
+
             try {
 
                 // open a URL connection to the Servlet
                 FileInputStream fileInputStream = new FileInputStream(sourceFile);
-                URL url = new URL(upLoadServerUri);
+                URL url = new URL(POSTURL);
 
                 // Open a HTTP  connection to  the URL
                 conn = (HttpURLConnection) url.openConnection();
@@ -152,20 +117,6 @@ public class TGServer {
                 if(serverResponseCode == 200){
 
                     Log.d(LOG_TAG, "File Upload Complete.");
-
-                    /*
-                    currentActivity.runOnUiThread(new Runnable() {
-                        public void run() {
-
-                            String msg = "File Upload Completed.\n\n See uploaded file here : \n\n"
-                                    + " http://www.androidexample.com/media/uploads/"
-                                    + uploadFileName;
-
-                            TGToast.toastyPopUp("File Upload Complete.", currentActivity);
-
-                        }
-                    });
-                    */
                 }
 
                 //close the streams //
@@ -180,15 +131,6 @@ public class TGServer {
                 ex.printStackTrace();
 
                 Log.d(LOG_TAG, "MalformedURLException");
-
-                /*
-                currentActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-                        TGToast.toastyPopUp("MalformedURLException", currentActivity);
-                    }
-                });
-                */
-
                 Log.e("Upload file to server", "error: " + ex.getMessage(), ex);
             }
 
@@ -198,15 +140,6 @@ public class TGServer {
 
                 Log.d(LOG_TAG, "Got Exception : see logcat ");
                 Log.e(LOG_TAG, "Excpetion: " + e);
-
-                /*
-                currentActivity.runOnUiThread(new Runnable() {
-                    public void run() {
-
-                        TGToast.toastyPopUp("Got Exception : see logcat ", currentActivity);
-                    }
-                });
-                */
 
             }
 

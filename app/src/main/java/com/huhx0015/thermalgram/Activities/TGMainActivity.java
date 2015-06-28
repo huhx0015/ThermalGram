@@ -3,7 +3,6 @@ package com.huhx0015.thermalgram.Activities;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -15,29 +14,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.widget.Button;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import com.huhx0015.flirhotornot.R;
-import com.huhx0015.thermalgram.Fragments.TGFlirFragment;
 import com.huhx0015.thermalgram.Fragments.TGFragment;
 import com.huhx0015.thermalgram.Intent.TGShareIntent;
-import com.huhx0015.thermalgram.Interface.OnFlirUpdateListener;
-import com.huhx0015.thermalgram.Server.TGServer;
-import com.huhx0015.thermalgram.UI.TGToast;
+import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
 import com.huhx0015.thermalgram.UI.TGUnbind;
-import com.squareup.picasso.Picasso;
 
 import java.lang.ref.WeakReference;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateListener {
+public class TGMainActivity extends AppCompatActivity {
 
     // ACTIVITY VARIABLES
     private Boolean isLoading = false; // Used for preventing users from launching multiple activity intents.
@@ -45,6 +35,7 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
     // FRAGMENT VARIABLES
     private Boolean isRemovingFragment = false; // Used to determine if the fragment is currently being removed.
     private Boolean showFlirFragment = false; // Used to determine if the FLIR fragment is being shown or not.
+    private TGFragment flirFragment; // References the TGFlirFragment class.
 
     // LOGGING VARIABLES
     private static final String LOG_TAG = TGMainActivity.class.getSimpleName();
@@ -240,8 +231,14 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
 
             int animationResource; // References the animation XML resource file.
 
-            // Sets the animation XML resource file, based on the fragment type.
-            if (fragType.equals("FLIR")) { animationResource = R.anim.bottom_down; } // FLIR
+            // FLIR
+            if (fragType.equals("FLIR")) {
+
+                animationResource = R.anim.bottom_down; // Sets the animation XML resource file.
+
+                // Signals the FLIR fragment to disconnect the FLIR One device.
+                disconnectFlirFromFragment();
+            }
             else { animationResource = R.anim.slide_up; } // MISCELLANEOUS
 
             Animation fragmentAnimation = AnimationUtils.loadAnimation(this, animationResource);
@@ -291,8 +288,8 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
 
         // Sets up the TGFlirFragment view.
         //TGFlirFragment fragment = new TGFlirFragment();
-        TGFragment fragment = new TGFragment();
-        setUpFragment(fragment, "FLIR", isAnimated);
+        flirFragment = new TGFragment();
+        setUpFragment(flirFragment, "FLIR", isAnimated);
 
         // Indicates that the TGFlirFragment is currently being shown.
         showFlirFragment = true;
@@ -328,10 +325,10 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
 
     /** INTERFACE FUNCTIONALITY ________________________________________________________________ **/
 
-    // updateServer(): Sends the file to the server.
-    @Override
-    public void updateServer(String fileName) {
-        TGToast.toastyPopUp("updateServer(): Uploading the image to the server...", this);
-        //TGServer.uploadImageFile(fileName);
+    // disconnectFlirFromFragment(): An interface method that signals the TGFlirFragment class to
+    // disconnect the FLIR One device.
+    public void disconnectFlirFromFragment() {
+        try { ((OnFlirViewListener) flirFragment).disconnectFlirDevice(); }
+        catch (ClassCastException cce) { } // Catch for class cast exception errors.
     }
 }

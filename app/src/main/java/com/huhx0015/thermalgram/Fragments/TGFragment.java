@@ -1,9 +1,7 @@
 package com.huhx0015.thermalgram.Fragments;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -22,28 +20,12 @@ import com.flir.flironesdk.Frame;
 import com.flir.flironesdk.FrameProcessor;
 import com.flir.flironesdk.RenderedImage;
 import com.huhx0015.flirhotornot.R;
-import com.huhx0015.thermalgram.Interface.OnFlirUpdateListener;
-import com.huhx0015.thermalgram.Server.HttpFileUpload;
+import com.huhx0015.thermalgram.Interface.OnFlirViewListener;
 import com.huhx0015.thermalgram.Server.TGServer;
 import com.huhx0015.thermalgram.UI.TGToast;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
-import org.apache.http.HttpResponse;
-import org.apache.http.NameValuePair;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.entity.UrlEncodedFormEntity;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.message.BasicNameValuePair;
-import org.apache.http.util.EntityUtils;
-
-import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.nio.ByteBuffer;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
@@ -51,31 +33,29 @@ import java.util.Locale;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 
-public class TGFragment extends Fragment implements Device.Delegate, FrameProcessor.Delegate {
+public class TGFragment extends Fragment implements Device.Delegate, FrameProcessor.Delegate, OnFlirViewListener {
 
     /** CLASS VARIABLES ________________________________________________________________________ **/
 
-    private static final String POSTURL = "http://50.62.57.6/~ibrahimkabil7/thermalgram/endpoint.php"; // Server URL
+    // FLIR VARIABLES
+    private Boolean isFlirOn = false; // Used to determine if the FLIR One device is connected or not.
+    private Device flirDevice; // References the connected FLIR One device.
+    private FrameProcessor frameProcessor; // Responsible for processing the frames from the FLIR One device.
 
-    // THREAD VARIABLES
-    private Handler backgroundHandler = new Handler(); // Thread for handling background animation.
-
-    // SAVE LOCATION
-    Boolean isCaptureImage = false; // Used to determine if an image capture event is in progress.
-    Boolean isSavingDone = false;
-    String saveLocationPath = "";
-    String currentImageFile = "";
-
-    // FILR VARIABLES
-    Boolean isFlirOn = false;
-    Device flirDevice;
-    private FrameProcessor frameProcessor;
+    // IMAGE VARIABLES
+    private Boolean isCaptureImage = false; // Used to determine if an image capture event is in progress.
+    private Boolean isSavingDone = false; // Used to determine if the thermal frame has been saved.
+    private String currentImageFile = ""; // References the current image file name.
+    private String saveLocationPath = ""; // References the save location path.
 
     // LOGGING VARIABLES
     private static final String LOG_TAG = TGFragment.class.getSimpleName();
 
     // SYSTEM VARIABLES
     private Activity currentActivity; // Used to determine the activity class this fragment is currently attached to.
+
+    // THREAD VARIABLES
+    private Handler backgroundHandler = new Handler(); // Thread for handling background animation.
 
     // VIEW INJECTION VARIABLES
     @InjectView(R.id.tg_capture_button) ImageButton captureButton;
@@ -150,9 +130,19 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
             @Override
             public void onClick(View v) {
 
-                TGToast.toastyPopUp("Saving your thelfie...", currentActivity);
                 Log.d(LOG_TAG, "setOnClickListener(): Capture button has been pressed.");
-                isCaptureImage = true; // Indicates that the thermal frame should be saved.
+
+                // Checks to see if the FLIR One device has been connected or not.
+                if (isFlirOn) {
+
+                    TGToast.toastyPopUp("Saving your thelfie...", currentActivity);
+
+                    // Indicates that the current thermal frame should be saved.
+                    isCaptureImage = true;
+                }
+
+                // Informs the user to connect the FLIR One device.
+                else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity);  }
             }
 
         });
@@ -163,64 +153,110 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
             @Override
             public void onClick(View v) {
 
-                // Uploads image to the server.
-                TGServer.imageUploadFile(currentImageFile, currentActivity);
+                Log.d(LOG_TAG, "setOnClickListener(): Upload button has been pressed.");
+
+                // Checks to see if the FLIR One device has been connected or not.
+                if (isFlirOn) {
+
+                    TGToast.toastyPopUp("Uploading your thelfie to the server...", currentActivity);
+
+                    // Uploads image to the server.
+                    TGServer.imageUploadFile(currentImageFile);
+                }
+
+                // Informs the user to connect the FLIR One device.
+                else { TGToast.toastyPopUp("Please connect the FLIR One device.", currentActivity);  }
             }
 
         });
     }
 
-
-
     /** IMAGE FUNCTIONALITY ____________________________________________________________________ **/
 
-    // saveImage():
+    // saveImage(): Saves the current rendered frame to the local storage in the device's default
+    // Pictures folder.
     private void saveImage(RenderedImage renderedImage) {
 
         // Sets up the save location and the file formatting.
         saveLocationPath = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString();
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ssZ", Locale.getDefault());
         String formatedDate = sdf.format(new Date());
-        currentImageFile = "FLIROne-" + formatedDate + ".jpg";
+        currentImageFile = "Thermalgram-" + formatedDate + ".jpg";
 
         Log.d(LOG_TAG, "saveImage(): Save environment has been prepared.");
 
-        try{
+        // Attempts to save the file to local storage.
+        try {
 
             String lastSavedPath = saveLocationPath + "/" + currentImageFile;
             renderedImage.getFrame().save(lastSavedPath, RenderedImage.Palette.Iron, RenderedImage.ImageType.BlendedMSXRGBA8888Image);
-            //renderedImage.getFrame().save(lastSavedPath, RenderedImage.Palette.Iron, RenderedImage.ImageType.VisualJPEGImage);
 
             MediaScannerConnection.scanFile(currentActivity,
                     new String[] {saveLocationPath + "/" + currentImageFile}, null,
                     new MediaScannerConnection.OnScanCompletedListener() {
 
+                        // onScanCompleted(): Runs when media scan has concluded.
                         @Override
                         public void onScanCompleted(String path, Uri uri) {
+
                             Log.i("ExternalStorage", "Scanned " + path + ":");
                             Log.i("ExternalStorage", "-> uri=" + uri);
                             Log.d(LOG_TAG, "saveImage(): Thermal image save has been successful. File has been saved as: " + currentImageFile);
 
                             isSavingDone = true; // Signals that the file has been saved.
+
+                            // DEBUG:
+                            // Uploads the saved image file to the web server in the background.
+                            TGUploadImageTask uploadTask = new TGUploadImageTask();
+                            uploadTask.execute();
+
                         }
                     });
         }
 
+        // Exception handler.
         catch (Exception e){
             Log.d(LOG_TAG, "saveImage(): Thermal image save has failed.");
             e.printStackTrace();
         }
-
     }
 
+    /** INTERFACE FUNCTIONALITY ________________________________________________________________ **/
 
-    private void updateThermalImageView(final Bitmap frame){
-        currentActivity.runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                thermalImage.setImageBitmap(frame);
+    // disconnectFlirDevice(): Disconnects the FLIR One device.
+    @Override
+    public void disconnectFlirDevice() {
+        Device.stopDiscovery();
+    }
+
+    /** THREAD FUNCTIONALITY ___________________________________________________________________ **/
+
+    // backgroundThread():
+    private Runnable backgroundThread = new Runnable() {
+
+        public void run() {
+
+            if (isSavingDone) {
+
+                uploadButton.setVisibility(View.VISIBLE);
+                captureButton.setVisibility(View.GONE);
+
+                isCaptureImage = false; // Resets the capture image value.
+                isSavingDone = false; // Resets the saving done value.
             }
-        });
+
+            backgroundHandler.postDelayed(this, 1000); // Updates the thread per 1000 ms.
+        }
+    };
+
+    // startStopThreads(): Resumes or stops all threads.
+    private void startStopThreads(Boolean isStart) {
+
+        // Starts all threads.
+        if (isStart == true) { backgroundHandler.postDelayed(backgroundThread, 1000); }
+
+        // Stops all threads.
+        else { backgroundHandler.removeCallbacks(backgroundThread); }
     }
 
     /** FLIR EXTENSION FUNCTIONALITY ___________________________________________________________ **/
@@ -235,7 +271,7 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
 
     }
 
-    // Called when the FLIR One device is connected.
+    // onDeviceConnected(): Called when the FLIR One device is connected.
     @Override
     public void onDeviceConnected(Device device) {
 
@@ -252,12 +288,13 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         });
     }
 
+    // onDeviceDisconnected(): This method runs when the FLIR One device has been disconnected.
     @Override
     public void onDeviceDisconnected(Device device) {
-
+        isFlirOn = false; // Indicates that the FLIR One device has been disconnected.
     }
 
-    // Passes rendered images to delegate.
+    // onFrameProcessed(): Passes rendered images to delegate.
     @Override
     public void onFrameProcessed(RenderedImage renderedImage) {
 
@@ -288,43 +325,33 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
         }
     }
 
-    /** INTERFACE FUNCTIONALITY ________________________________________________________________ **/
+    /** ASYNCTASK FUNCTIONALITY ________________________________________________________________ **/
 
-    // updateServer(): Attempts to upload the image to the server.
-    private void updateServer(String fileName) {
-        try { ((OnFlirUpdateListener) currentActivity).updateServer(fileName); }
-        catch (ClassCastException cce) { } // Catch for class cast exception errors.
-    }
+    /**
+     * --------------------------------------------------------------------------------------------
+     * [TGUploadImageTask] CLASS
+     * PROGRAMMER: Michael Yoon Huh (HUHX0015)
+     * DESCRIPTION: This is an AsyncTask-based class that uploads the thermal image to the web
+     * server in the background.
+     * --------------------------------------------------------------------------------------------
+     */
 
-    /** THREAD FUNCTIONALITY ___________________________________________________________________ **/
+    public class TGUploadImageTask extends AsyncTask<String, Integer, String> {
 
-
-    // backgroundThread():
-    private Runnable backgroundThread = new Runnable() {
-
-        public void run() {
-
-            if (isSavingDone) {
-
-                uploadButton.setVisibility(View.VISIBLE);
-                captureButton.setVisibility(View.GONE);
-
-                isCaptureImage = false; // Resets the capture image value.
-                isSavingDone = false; // Resets the saving done value.
-            }
-
-            backgroundHandler.postDelayed(this, 1000); // Updates the thread per 1000 ms.
+        // onPostExecute(): This method runs after the AsyncTask has finished running.
+        @Override
+        protected void onPostExecute(String result) {
+            Log.d(LOG_TAG, "Image upload task complete.");
         }
-    };
 
-    // startStopThreads(): Resumes or stops all threads.
-    private void startStopThreads(Boolean isStart) {
+        // doInBackground(): This method constantly runs in the background while AsyncTask is
+        // running.
+        @Override
+        protected String doInBackground(String... params) {
 
-        // Starts all threads.
-        if (isStart == true) { backgroundHandler.postDelayed(backgroundThread, 1000); }
-
-        // Stops all threads.
-        else { backgroundHandler.removeCallbacks(backgroundThread); }
+            // Uploads the image to the web server in the background.
+            TGServer.imageUploadFile(currentImageFile);
+            return null;
+        }
     }
-
 }
