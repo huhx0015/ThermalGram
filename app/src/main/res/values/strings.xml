@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Thermalgram</string>
+    <string name="app_name">ThermalGram</string>
     <string name="flir_preview">Thermal Preview</string>
     <string name="thelfie">Take a Thelfie</string>
 
