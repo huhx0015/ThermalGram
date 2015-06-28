@@ -3,7 +3,6 @@ package com.huhx0015.thermalgram.Preferences;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
-
 import com.huhx0015.flirhotornot.R;
 
 /** ------------------------------------------------------------------------------------------------

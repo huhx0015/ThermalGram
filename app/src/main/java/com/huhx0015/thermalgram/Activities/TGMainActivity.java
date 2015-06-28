@@ -332,7 +332,7 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
     private void setUpWebView() {
 
         tgWebView.getSettings().setJavaScriptEnabled(true);
-        tgWebView.addJavascriptInterface(new SBWebAppInterface(this), "Android");
+        tgWebView.addJavascriptInterface(new TGWebAppInterface(this), "Android");
         tgWebView.getSettings().setUserAgentString("Mozilla/5.0 (iPhone; U; CPU like Mac OS X; en) AppleWebKit/420+ (KHTML, like Gecko) Version/3.0 Mobile/1A543a Safari/419.3");
 
         // Sets a listener for the WebView.
@@ -347,9 +347,9 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
         tgWebView.loadUrl(currentURL); // Loads the URL for the WebView.
     }
 
-    // SBWebClient(): A method which extends the WebViewClient class to handle the override of URL
+    // TGWebClient(): A method which extends the WebViewClient class to handle the override of URL
     // loading behavior.
-    private class SBWebClient extends WebViewClient {
+    private class TGWebClient extends WebViewClient {
 
         @Override
         public boolean shouldOverrideUrlLoading(WebView view, String url) {
@@ -357,12 +357,12 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
         }
     }
 
-    // SBWebAppInterface(): This method is responsible for binding JavaScript code to Android code.
-    public class SBWebAppInterface {
+    // TGWebAppInterface(): This method is responsible for binding JavaScript code to Android code.
+    public class TGWebAppInterface {
 
         // Instantiates the interface and sets the context.
         Context mContext;
-        SBWebAppInterface(Context c) {
+        TGWebAppInterface(Context c) {
             mContext = c;
         }
 
