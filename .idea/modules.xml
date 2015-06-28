@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Thermalgram.iml" filepath="$PROJECT_DIR$/Thermalgram.iml" />
+      <module fileurl="file://$PROJECT_DIR$/FLIR_Hot_or_Not.iml" filepath="$PROJECT_DIR$/FLIR_Hot_or_Not.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>

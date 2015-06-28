@@ -23,11 +23,8 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     compile(name:'flironesdk', ext:'aar')
     compile 'com.android.support:design:+'
-    compile 'com.android.support:cardview-v7:+'
-    compile 'com.android.support:recyclerview-v7:+'
     compile 'com.squareup.picasso:picasso:+'
     compile 'com.jakewharton:butterknife:+'
-    compile 'com.squareup.retrofit:retrofit:+'
     compile 'com.squareup.okhttp:okhttp:+'
     compile 'com.squareup.okhttp:okhttp-urlconnection:+'
 }

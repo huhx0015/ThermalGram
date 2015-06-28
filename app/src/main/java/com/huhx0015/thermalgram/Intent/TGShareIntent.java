@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.util.Log;
-
 import java.io.ByteArrayOutputStream;
 
 /** -----------------------------------------------------------------------------------------------
@@ -49,6 +48,7 @@ public class TGShareIntent {
             return;
         }
 
+        // Checks to see if the thermalBitmap is null first.
         if (thermalBitmap != null) {
 
             // Prepares the thermal bitmap to be shared via an Intent.
