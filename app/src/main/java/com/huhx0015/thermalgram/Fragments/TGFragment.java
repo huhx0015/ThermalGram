@@ -163,29 +163,14 @@ public class TGFragment extends Fragment implements Device.Delegate, FrameProces
             @Override
             public void onClick(View v) {
 
-
-                UploadFile();
-
-                //updateServer(currentImageFile); // Updates the server.
+                // Uploads image to the server.
+                TGServer.imageUploadFile(currentImageFile, currentActivity);
             }
 
         });
     }
 
-    public void UploadFile(){
-        try {
-            // Set your file path here
-            FileInputStream fstrm = new FileInputStream(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).toString() + "/" + currentImageFile);
 
-            // Set your server page url (and the file title/description)
-            HttpFileUpload hfu = new HttpFileUpload(POSTURL, currentImageFile, "Thelfie");
-
-            hfu.Send_Now(fstrm);
-
-        } catch (FileNotFoundException e) {
-            // Error: File not found
-        }
-    }
 
     /** IMAGE FUNCTIONALITY ____________________________________________________________________ **/
 

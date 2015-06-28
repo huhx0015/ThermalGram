@@ -332,6 +332,6 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
     @Override
     public void updateServer(String fileName) {
         TGToast.toastyPopUp("updateServer(): Uploading the image to the server...", this);
-        TGServer.uploadImageFile(fileName);
+        //TGServer.uploadImageFile(fileName);
     }
 }
