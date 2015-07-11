@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /** -----------------------------------------------------------------------------------------------
  *  [TGFlirFragment] CLASS
@@ -123,21 +123,21 @@ public class TGSampleFragment extends Fragment implements Device.Delegate,
     private Activity currentActivity; // Used to determine the activity class this fragment is currently attached to.
     
     // VIEW INJECTION VARIABLES
-    @InjectView(R.id.fullscreen_content_controls) View controlsView;
-    @InjectView(R.id.fullscreen_content_controls_top) View controlsViewTop;
-    @InjectView(R.id.fullscreen_content) View contentView;
-    @InjectView(R.id.imageTypeListView) ListView imageTypeListView;
-    @InjectView(R.id.imageTypeListContainer) LinearLayout imageTypeListContainer;
-    @InjectView(R.id.paletteListView) ListView paletteListView;
-    @InjectView(R.id.imageButton) ImageButton imageButton;
-    @InjectView(R.id.change_view_button) ToggleButton changeViewButton;
-    @InjectView(R.id.chargeCableToggle) ToggleButton chargeCableButton;
-    @InjectView(R.id.streamButton) ToggleButton streamButton;
-    @InjectView(R.id.switch_rotate) ToggleButton switchRotateButton;
-    @InjectView(R.id.connect_sim_button) Button connectSimButton;
-    @InjectView(R.id.tuneButton) Button tuneButton;
-    @InjectView(R.id.batteryChargeIndicator) ImageView chargingIndicator;
-    @InjectView(R.id.batteryLabelTextView) TextView levelTextView;
+    @Bind(R.id.fullscreen_content_controls) View controlsView;
+    @Bind(R.id.fullscreen_content_controls_top) View controlsViewTop;
+    @Bind(R.id.fullscreen_content) View contentView;
+    @Bind(R.id.imageTypeListView) ListView imageTypeListView;
+    @Bind(R.id.imageTypeListContainer) LinearLayout imageTypeListContainer;
+    @Bind(R.id.paletteListView) ListView paletteListView;
+    @Bind(R.id.imageButton) ImageButton imageButton;
+    @Bind(R.id.change_view_button) ToggleButton changeViewButton;
+    @Bind(R.id.chargeCableToggle) ToggleButton chargeCableButton;
+    @Bind(R.id.streamButton) ToggleButton streamButton;
+    @Bind(R.id.switch_rotate) ToggleButton switchRotateButton;
+    @Bind(R.id.connect_sim_button) Button connectSimButton;
+    @Bind(R.id.tuneButton) Button tuneButton;
+    @Bind(R.id.batteryChargeIndicator) ImageView chargingIndicator;
+    @Bind(R.id.batteryLabelTextView) TextView levelTextView;
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
 
@@ -166,7 +166,7 @@ public class TGSampleFragment extends Fragment implements Device.Delegate,
                              Bundle savedInstanceState) {
 
         View tg_flir_fragment_view = (ViewGroup) inflater.inflate(R.layout.tg_flir_fragment, container, false);
-        ButterKnife.inject(this, tg_flir_fragment_view); // ButterKnife view injection initialization.
+        ButterKnife.bind(this, tg_flir_fragment_view); // ButterKnife view injection initialization.
 
         setUpLayout(); // Sets up the layout for the fragment.
 
@@ -190,7 +190,7 @@ public class TGSampleFragment extends Fragment implements Device.Delegate,
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this); // Sets all injected views to null.
+        ButterKnife.unbind(this); // Sets all injected views to null.
     }
 
 

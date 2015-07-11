@@ -30,7 +30,7 @@ import com.huhx0015.thermalgram.UI.TGSpeech;
 import com.huhx0015.thermalgram.UI.TGUnbind;
 import java.lang.ref.WeakReference;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /** ------------------------------------------------------------------------------------------------
  *  [TGMainActivity] CLASS
@@ -65,11 +65,11 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
     private String currentURL = "http://thermalgram.com/webview.php"; // Used to reference the URL for the WebView object.
 
     // VIEW INJECTION VARIABLES
-    @InjectView(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
-    @InjectView(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
-    @InjectView(R.id.tg_webview_progress_bar) ProgressBar tgProgressBar; // References the loading progress bar.
-    @InjectView(R.id.tg_toolbar) Toolbar tgToolbar; // Used for referencing the Toolbar object.
-    @InjectView(R.id.tg_main_webview) WebView tgWebView; // Used to reference the WebView object.
+    @Bind(R.id.tg_action_button) FloatingActionButton tgActionButton; // References the floating action button object.
+    @Bind(R.id.tg_fragment_container) FrameLayout fragmentDisplay; // Used to reference the fragment container.
+    @Bind(R.id.tg_webview_progress_bar) ProgressBar tgProgressBar; // References the loading progress bar.
+    @Bind(R.id.tg_toolbar) Toolbar tgToolbar; // Used for referencing the Toolbar object.
+    @Bind(R.id.tg_main_webview) WebView tgWebView; // Used to reference the WebView object.
 
     /** ACTIVITY FUNCTIONALITY _________________________________________________________________ **/
 
@@ -156,7 +156,7 @@ public class TGMainActivity extends AppCompatActivity implements OnFlirUpdateLis
 
         // Sets the XML layout file for the activity.
         setContentView(R.layout.tg_main_activity);
-        ButterKnife.inject(this); // ButterKnife view injection initialization.
+        ButterKnife.bind(this); // ButterKnife view bindion initialization.
 
         setUpToolbar(); // Sets up the toolbar for the activity.
         setUpButtons(); // Sets up the button listeners for the activity.

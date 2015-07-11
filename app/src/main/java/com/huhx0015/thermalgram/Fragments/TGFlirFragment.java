@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.EnumSet;
 import java.util.Locale;
 import butterknife.ButterKnife;
-import butterknife.InjectView;
+import butterknife.Bind;
 
 /** ------------------------------------------------------------------------------------------------
  *  [TGFlirFragment] CLASS
@@ -67,8 +67,8 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
     private Activity currentActivity; // Used to determine the activity class this fragment is currently attached to.
 
     // VIEW INJECTION VARIABLES
-    @InjectView(R.id.tg_capture_button) ImageButton captureButton;
-    @InjectView(R.id.tg_thermal_image) ImageView thermalImage;
+    @Bind(R.id.tg_capture_button) ImageButton captureButton;
+    @Bind(R.id.tg_thermal_image) ImageView thermalImage;
 
     /** FRAGMENT FUNCTIONALITY _________________________________________________________________ **/
 
@@ -86,7 +86,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
                              Bundle savedInstanceState) {
 
         View tg_fragment_view = (ViewGroup) inflater.inflate(R.layout.tg_fragment, container, false);
-        ButterKnife.inject(this, tg_fragment_view); // ButterKnife view injection initialization.
+        ButterKnife.bind(this, tg_fragment_view); // ButterKnife view injection initialization.
 
         // FLIR Initialization:
         RenderedImage.ImageType blendedType = RenderedImage.ImageType.BlendedMSXRGBA8888Image;
@@ -104,7 +104,7 @@ public class TGFlirFragment extends Fragment implements Device.Delegate, FramePr
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        ButterKnife.reset(this); // Sets all injected views to null.
+        ButterKnife.unbind(this); // Sets all injected views to null.
     }
 
     @Override
