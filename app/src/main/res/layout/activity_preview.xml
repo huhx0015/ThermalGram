@@ -2,11 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
     android:layout_height="match_parent" android:background="@android:color/black"
     android:orientation="vertical"
-    tools:context=".PreviewActivity" android:keepScreenOn="true" android:id="@+id/topView"
+    android:keepScreenOn="true" android:id="@+id/topView"
     android:touchscreenBlocksFocus="false">
-
-
-
 
     <!-- This FrameLayout insets its children based on system windows using
          android:fitsSystemWindows. -->
@@ -96,7 +93,6 @@
                 android:textOff="@string/rotate_off"
                 android:textOn="@string/rotate_on"
                 style="?metaButtonBarButtonStyle" />
-
 
         </LinearLayout>
         <FrameLayout android:id="@+id/fullscreen_content_controls" style="?metaButtonBarStyle"
@@ -189,9 +185,6 @@
             android:layout_gravity="center"
             android:layout_marginTop="36dp"
             android:visibility="gone" />
-
-
-
 
     </FrameLayout>
 </FrameLayout>
