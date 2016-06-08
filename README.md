@@ -18,7 +18,7 @@ Event Website: http://www.eventbrite.com/e/flirs-bring-the-heat-hacker-maker-cha
 
 DevPost: http://devpost.com/software/thermalgram
 
-Website: http://devpost.com/software/thermalgram
+Website: http://www.thermalgram.com/
 
 ## Description
 
