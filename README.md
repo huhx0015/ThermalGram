@@ -18,6 +18,8 @@ Event Website: http://www.eventbrite.com/e/flirs-bring-the-heat-hacker-maker-cha
 
 DevPost: http://devpost.com/software/thermalgram
 
+Website: http://devpost.com/software/thermalgram
+
 ## Description
 
 An Android application that utilizes the FLIR One camera to produce and share thermal selfies with family, friends, and social media. In addition, users can rate their own and other people's "thelfies" "hotness" on a scale from 1 to 5. Developed for the FLIR "Bring the Heat" Hacker and Maker Challenge San Francisco event. 
