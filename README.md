@@ -1,9 +1,15 @@
-ThermalGram | FLIR's "Bring the Heat" Hacker and Maker Challenge: 
+ThermalGram | FLIR's "Bring the Heat" Hacker and Maker Challenge 
 =========
 
 Team: Michael Huh, Ibrahim Kabil, Goretti Campbell, Ssurey Moon, Missy Bur
 
 Platform: Android, Web
+
+![thermalgram_preview](https://cloud.githubusercontent.com/assets/1645482/12532080/c130cd14-c1bf-11e5-98fd-a1b6029e1962.png)
+
+Event: FLIR's "Bring the Heat" Hacker and Maker Challenge
+
+DevPost: http://devpost.com/software/thermalgram
 
 An Android application that utilizes the FLIR One camera to produce and share thermal selfies with family, friends, and social media. In addition, users can rate their own and other people's "thelfies" "hotness" on a scale from 1 to 5. Developed for the FLIR "Bring the Heat" Hacker and Maker Challenge San Francisco event. 
 
